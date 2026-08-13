@@ -72,7 +72,7 @@ class RobotBase:
         """Get sensor value of specified robot
         
         Args:
-            name: Robot name (str)
+            name: Sensor name (str)
         
         Raises:
             ValueError: If name doesn't match self._name
@@ -80,37 +80,61 @@ class RobotBase:
         Returns:
             Measurement from the robot's sensors
         """
-        if (name != self._name):
-            raise ValueError(f"Robot - {name} - not found")
+        if (name not in self._sensor_readings):
+            raise ValueError(f"Sensor - {name} - not found")
         
-        return self._sensor_readings
+        return self._sensor_readings[name]
 
     def set_sensor_reading(self, name, value):
         """Set sensor value of specified robot
         
         Args:
-            name: Robot name (str)
+            name: Sensor name (str)
             value: Sensor value (float)
         
         Raises:
-            ValueError: Name doesn't match self._name
             ValueError: Value not float
         """
-        if (name != self._name):
-            raise ValueError(f"Robot - {name} - not found")
-        elif (value < 0):
+        if (value < 0):
             raise ValueError("Please enter a number")
         
-        self._sensor_readings = value
+        self._sensor_readings[name] = str(value) + "cm"
+
+    def report_status(self):
+        """Robot status summary
+        
+        Returns:
+            String with all robot data
+        """
+        return (f"Robot Name: {self._name} | "
+                f"Battery Level: {self._battery_level:.2f}% | "
+                f"IsMoving: {self._is_moving} | "
+                f"Sensor Readings: {self._sensor_readings}")
 
     def __str__(self):
         """User-friendly report of the robot's status"""
-        return(f"Robot: {self._name} Battery Level: {self._battery_level:.2f}%\n"
+        return(f"Robot: {self._name}\n"
+               f"Battery Level: {self._battery_level:.2f}%\n"
                f"Is moving: {self._is_moving}\n"
                f"Sensor Readings: {self._sensor_readings}")
     def __repr__(self):
         """Dev-friendly report of all variables"""
-        return (f"RobotBase(name = {self._name}, "
-                f"battery_level = {self._battery_level}, "
-                f"is_moving = {self._is_moving}, "
+        return (f"RobotBase(name = {self._name}\n"
+                f"battery_level = {self._battery_level}\n"
+                f"is_moving = {self._is_moving}\n"
                 f"sensor_readings = {self._sensor_readings})")
+
+robot = RobotBase("Bingus", 78.23, False, {"Front":"24cm"})
+android = RobotBase("Sbeve", 99.93, True, {"Front":"13cm"})
+
+print(robot)
+print(android)
+
+print(RobotBase.report_status(robot))
+print(RobotBase.report_status(android))
+
+RobotBase.set_sensor_reading(robot, "Rear", 47)
+print(RobotBase.get_sensor_reading(robot, "Rear"))
+
+print(RobotBase.report_status(robot))
+
