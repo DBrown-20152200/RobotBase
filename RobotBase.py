@@ -15,4 +15,23 @@ class RobotBase:
         self._is_moving = is_moving
         self._sensor_readings = sensor_readings
 
-        
+    @property
+    def name(self):
+        """Get robot name"""
+        return self._name
+
+    @property
+    def battery_level(self):
+        """Get current battery level"""
+        return self._battery_level
+
+    @property
+    def is_moving(self):
+        """Get robot movement status"""
+        return self._is_moving
+
+    @property
+    def sensor_readings(self):
+        """Get sensor readings dict"""
+        return self._sensor_readings
+    
