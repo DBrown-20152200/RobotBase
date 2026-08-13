@@ -49,3 +49,18 @@ class RobotBase:
         if (0<=value<=100 == False):
             raise ValueError("Battery level must be 0-100.")
         self._battery_level = value
+
+        def move_forward(self, speed):
+            """Robot moves forward at set speed.
+            
+            Args:
+                speed: Movement speed
+            
+            Raises:
+                ValueError: If speed is not a positive integer
+            """
+            if speed <= 0:
+                raise ValueError("Speed must be above 0.")
+            self._is_moving = True
+
+        
