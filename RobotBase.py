@@ -50,27 +50,62 @@ class RobotBase:
             raise ValueError("Battery level must be 0-100.")
         self._battery_level = value
 
-        def move_forward(self, speed):
-            """Robot moves forward at set speed.
-            
-            Args:
-                speed: Movement speed
-            
-            Raises:
-                ValueError: If speed is not a positive integer
-            """
-            if speed <= 0:
-                raise ValueError("Speed must be above 0.")
-            self._is_moving = True
+    def move_forward(self, speed):
+        """Robot moves forward at set speed.
+        
+        Args:
+            speed: Movement speed (int)
+        
+        Raises:
+            ValueError: If speed is not a positive integer
+        """
+        if speed <= 0:
+            raise ValueError("Speed must be above 0.")
+        self._is_moving = True
 
-        def stop():
-            """Robot stops movement.
+    def stop(self):
+        """Robot stops movement.
+        
+        Args:
+            None
             
-            Args:
-                None
-                
-            Raises:
-                None
-            """
+        Raises:
+            None
+        """
 
-            self._is_moving = 0;
+        self._is_moving = False;
+
+    def get_sensor_reading(self, name):
+        """Get sensor value of specified robot
+        
+        Args:
+            name: Robot name (str)
+        
+        Raises:
+            ValueError: If name doesn't match self._name
+        """
+        if (name != self._name):
+            raise ValueError(f"Robot - {name} - not found")
+        
+        return self._sensor_readings
+
+    def set_sensor_reading(self, name, value):
+        """Set sensor value of specified robot
+        
+        Args:
+            name: Robot name (str)
+            value: Sensor value (float)
+        
+        Raises:
+            ValueError: Name doesn't match self._name
+            ValueError: Value not float
+        """
+
+        if (name != self._name):
+            raise ValueError(f"Robot - {name} - not found")
+        elif (value < 0):
+            raise ValueError("Please enter a number")
+        
+        self._sensor_readings = value
+
+    
