@@ -17,7 +17,7 @@ class RobotBase:
 
     @property
     def name(self):
-        """Get robot name"""
+        """Get robot name"""        
         return self._name
 
     @property
@@ -45,9 +45,9 @@ class RobotBase:
         Raises:
             ValueError: If battery level isn't between 0 and 100
         """
-
         if (0<=value<=100 == False):
             raise ValueError("Battery level must be 0-100.")
+        
         self._battery_level = value
 
     def move_forward(self, speed):
@@ -61,18 +61,11 @@ class RobotBase:
         """
         if speed <= 0:
             raise ValueError("Speed must be above 0.")
+        
         self._is_moving = True
 
     def stop(self):
-        """Robot stops movement.
-        
-        Args:
-            None
-            
-        Raises:
-            None
-        """
-
+        """Robot stops movement."""
         self._is_moving = False;
 
     def get_sensor_reading(self, name):
@@ -83,6 +76,9 @@ class RobotBase:
         
         Raises:
             ValueError: If name doesn't match self._name
+
+        Returns:
+            Measurement from the robot's sensors
         """
         if (name != self._name):
             raise ValueError(f"Robot - {name} - not found")
@@ -100,7 +96,6 @@ class RobotBase:
             ValueError: Name doesn't match self._name
             ValueError: Value not float
         """
-
         if (name != self._name):
             raise ValueError(f"Robot - {name} - not found")
         elif (value < 0):
@@ -108,4 +103,13 @@ class RobotBase:
         
         self._sensor_readings = value
 
-    
+    def report_status(self):
+        """Get a summary report of the robot's status
+        
+        Returns:
+            Status string with all the robot's data (str)
+        """
+        return(f"Robot: {self._name}\n"
+               f"Battery Level: {self._battery_level}\n"
+               f"Is moving: {self._is_moving}\n"
+               f"Sensor Readings: {self._sensor_readings}")
