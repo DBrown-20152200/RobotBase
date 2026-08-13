@@ -63,4 +63,14 @@ class RobotBase:
                 raise ValueError("Speed must be above 0.")
             self._is_moving = True
 
-        
+        def stop():
+            """Robot stops movement.
+            
+            Args:
+                None
+                
+            Raises:
+                None
+            """
+
+            self._is_moving = 0;
