@@ -103,13 +103,14 @@ class RobotBase:
         
         self._sensor_readings = value
 
-    def report_status(self):
-        """Get a summary report of the robot's status
-        
-        Returns:
-            Status string with all the robot's data (str)
-        """
-        return(f"Robot: {self._name}\n"
-               f"Battery Level: {self._battery_level}\n"
+    def __str__(self):
+        """User-friendly report of the robot's status"""
+        return(f"Robot: {self._name} Battery Level: {self._battery_level:.2f}%\n"
                f"Is moving: {self._is_moving}\n"
                f"Sensor Readings: {self._sensor_readings}")
+    def __repr__(self):
+        """Dev-friendly report of all variables"""
+        return (f"RobotBase(name = {self._name}, "
+                f"battery_level = {self._battery_level}, "
+                f"is_moving = {self._is_moving}, "
+                f"sensor_readings = {self._sensor_readings})")
