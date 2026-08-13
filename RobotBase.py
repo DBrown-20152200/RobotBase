@@ -34,4 +34,18 @@ class RobotBase:
     def sensor_readings(self):
         """Get sensor readings dict"""
         return self._sensor_readings
-    
+
+    @battery_level.setter
+    def battery_level(self, value):
+        """Set battery level with validation.
+        
+        Args: 
+            value: New battery level
+        
+        Raises:
+            ValueError: If battery level isn't between 0 and 100
+        """
+
+        if (0<=value<=100 == False):
+            raise ValueError("Battery level must be 0-100.")
+        self._battery_level = value
