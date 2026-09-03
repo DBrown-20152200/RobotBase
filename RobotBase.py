@@ -1,7 +1,7 @@
 class RobotBase:
     """A class of robot controls."""
 
-    def __init__(self, name, battery_level, is_moving, sensor_readings):
+    def __init__(self, name: str, battery_level: Battery, is_moving, sensor_readings):
         """Initialise a robot base
         
         Args:
@@ -124,17 +124,51 @@ class RobotBase:
                 f"is_moving = {self._is_moving}\n"
                 f"sensor_readings = {self._sensor_readings})")
 
-robot = RobotBase("Bingus", 78.23, False, {"Front":"24cm"})
-android = RobotBase("Sbeve", 99.93, True, {"Front":"13cm"})
+class Battery:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.level = capacity
 
-print(robot)
-print(android)
+    def drain(self, amount):
+        """Drain battery level by amount"""
+        self.level = max(0, self.level - amount)
+        if self.level == 0:
+            print("Battery is depleted")
 
-print(RobotBase.report_status(robot))
-print(RobotBase.report_status(android))
+    def charge(self, amount):
+        """Charge battery by amount"""
+        self.level = min(self.capacity, self.level + amount)
+        if self.level == self.capacity:
+            print("Battery fully charged")
 
-RobotBase.set_sensor_reading(robot, "Rear", 47)
-print(RobotBase.get_sensor_reading(robot, "Rear"))
+    def charge_percentage(self):
+        """Returns battery level as percentage"""
+        return (self.level/self.capacity) * 100
 
-print(RobotBase.report_status(robot))
+    def __str__(self):
+        return f"Battery charge at {self.charge_percentage():.2f}%"
+
+class Motor:
+    def __init__(self):
+        pass
+
+class Sensor:
+    def __init__(self):
+        pass
+
+
+if __name__ == "__main__":
+    robot = RobotBase("Bingus", 78.23, False, {"Front":"24cm"})
+    android = RobotBase("Sbeve", 99.93, True, {"Front":"13cm"})
+
+    print(robot)
+    print(android)
+
+    print(RobotBase.report_status(robot))
+    print(RobotBase.report_status(android))
+
+    RobotBase.set_sensor_reading(robot, "Rear", 47)
+    print(RobotBase.get_sensor_reading(robot, "Rear"))
+
+    print(RobotBase.report_status(robot))
 
