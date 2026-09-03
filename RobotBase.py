@@ -11,7 +11,7 @@ class RobotBase:
             _sensor_readings: Readings from sensor (dict)
         """
         self._name = name
-        self._battery_level = battery_level
+        self._battery_level = Battery(battery_level)
         self._is_moving = is_moving
         self._sensor_readings = sensor_readings
 
@@ -19,11 +19,6 @@ class RobotBase:
     def name(self):
         """Get robot name"""        
         return self._name
-
-    @property
-    def battery_level(self):
-        """Get current battery level"""
-        return self._battery_level
 
     @property
     def is_moving(self):
@@ -34,21 +29,6 @@ class RobotBase:
     def sensor_readings(self):
         """Get sensor readings dict"""
         return self._sensor_readings
-
-    @battery_level.setter
-    def battery_level(self, value):
-        """Set battery level with validation.
-        
-        Args: 
-            value: New battery level
-        
-        Raises:
-            ValueError: If battery level isn't between 0 and 100
-        """
-        if (0<=value<=100 == False):
-            raise ValueError("Battery level must be 0-100.")
-        
-        self._battery_level = value
 
     def move_forward(self, speed):
         """Robot moves forward at set speed.
@@ -107,14 +87,14 @@ class RobotBase:
             String with all robot data
         """
         return (f"Robot Name: {self._name} | "
-                f"Battery Level: {self._battery_level:.2f}% | "
+                f"Battery Level: {self._battery_level} | "
                 f"IsMoving: {self._is_moving} | "
                 f"Sensor Readings: {self._sensor_readings}")
 
     def __str__(self):
         """User-friendly report of the robot's status"""
         return(f"Robot: {self._name}\n"
-               f"Battery Level: {self._battery_level:.2f}%\n"
+               f"Battery Level: {self._battery_level}\n"
                f"Is moving: {self._is_moving}\n"
                f"Sensor Readings: {self._sensor_readings}")
     def __repr__(self):
@@ -146,7 +126,7 @@ class Battery:
         return (self.level/self.capacity) * 100
 
     def __str__(self):
-        return f"Battery charge at {self.charge_percentage():.2f}%"
+        return (f"Battery charge at {self.charge_percentage():.2f}%")
 
 class Motor:
     def __init__(self):
@@ -158,10 +138,11 @@ class Sensor:
 
 
 if __name__ == "__main__":
-    robot = RobotBase("Bingus", 78.23, False, {"Front":"24cm"})
-    android = RobotBase("Sbeve", 99.93, True, {"Front":"13cm"})
+    robot = RobotBase("Bingus", 180, False, {"Front":"24cm"})
+    android = RobotBase("Sbeve", 270, True, {"Front":"13cm"})
 
     print(robot)
+
     print(android)
 
     print(RobotBase.report_status(robot))
