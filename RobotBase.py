@@ -1,7 +1,7 @@
 class RobotBase:
     """A class of robot controls."""
 
-    def __init__(self, name: str, battery_level: Battery, is_moving, sensor_readings):
+    def __init__(self, name: str, battery: Battery, motor: Motor, sensor: Sensor):
         """Initialise a robot base
         
         Args:
@@ -11,42 +11,22 @@ class RobotBase:
             _sensor_readings: Readings from sensor (dict)
         """
         self._name = name
-        self._battery_level = Battery(battery_level)
-        self._is_moving = is_moving
-        self._sensor_readings = sensor_readings
+        self._battery_level = Battery(battery)
+        self._motor = Motor(motor)
+        self._sensor = Sensor(sensor)
 
     @property
     def name(self):
         """Get robot name"""        
         return self._name
 
-    @property
-    def is_moving(self):
-        """Get robot movement status"""
-        return self._is_moving
-
-    @property
-    def sensor_readings(self):
-        """Get sensor readings dict"""
-        return self._sensor_readings
-
-    def move_forward(self, speed):
-        """Robot moves forward at set speed.
-        
-        Args:
-            speed: Movement speed (int)
-        
-        Raises:
-            ValueError: If speed is not a positive integer
-        """
-        if speed <= 0:
-            raise ValueError("Speed must be above 0.")
-        
-        self._is_moving = True
-
-    def stop(self):
-        """Robot stops movement."""
-        self._is_moving = False;
+    def move(self, distance):
+        if self.speed < 0:
+            Motor.move_forward(distance)
+        elif self.speed > 0:
+            Motor.move_backward(distance)
+        else:
+            self.stop()
 
     def get_sensor_reading(self, name):
         """Get sensor value of specified robot
@@ -86,26 +66,17 @@ class RobotBase:
         Returns:
             String with all robot data
         """
-        return (f"Robot Name: {self._name} | "
-                f"Battery Level: {self._battery_level} | "
-                f"IsMoving: {self._is_moving} | "
-                f"Sensor Readings: {self._sensor_readings}")
+        pass
 
     def __str__(self):
         """User-friendly report of the robot's status"""
-        return(f"Robot: {self._name}\n"
-               f"Battery Level: {self._battery_level}\n"
-               f"Is moving: {self._is_moving}\n"
-               f"Sensor Readings: {self._sensor_readings}")
+        pass
     def __repr__(self):
         """Dev-friendly report of all variables"""
-        return (f"RobotBase(name = {self._name}\n"
-                f"battery_level = {self._battery_level}\n"
-                f"is_moving = {self._is_moving}\n"
-                f"sensor_readings = {self._sensor_readings})")
+        pass
 
 class Battery:
-    def __init__(self, capacity):
+    def __init__(self, capacity: int):
         self.capacity = capacity
         self.level = capacity
 
@@ -129,14 +100,44 @@ class Battery:
         return (f"Battery charge at {self.charge_percentage():.2f}%")
 
 class Motor:
-    def __init__(self):
-        pass
+    def __init__(self, speed: int, is_running: bool):
+        self.speed = speed        
+        self.is_running = is_running
+
+    def move_forward(self, distance:int):
+        """Moves the forward a set distance"""
+        self.distance = distance
+
+    def move_backward(self, distance:int):
+        """Moves backward a set distance"""
+        self.distance = 0 - distance
+
+    def stop(self):
+        """Stops movement"""
+        self.distance = 0
+
+    def set_speed(self, speed:int):
+        """Set specific robot speed"""
+        self.speed = speed
 
 class Sensor:
-    def __init__(self):
+    def __init__(self, sensor_type: str):
+        self.sensor_type = sensor_type
+
+    def read_data(self):
+        """Read sensor input"""
+        pass
+
+    def detect_obstacle(self):
+        """Has an obstacle been detected"""
+        pass
+
+    def get_reading(self):
+        """Return sensor readings"""
         pass
 
 
+# Tests RobotBase class if this is the main file
 if __name__ == "__main__":
     robot = RobotBase("Bingus", 180, False, {"Front":"24cm"})
     android = RobotBase("Sbeve", 270, True, {"Front":"13cm"})
