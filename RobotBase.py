@@ -1,19 +1,19 @@
 class RobotBase:
     """A class of robot controls."""
 
-    def __init__(self, name: str, battery: Battery, motor: Motor, is_running: bool, sensor: Sensor):
+    def __init__(self, name: str):
         """Initialise a robot base
         
         Args:
             _name: Robot name (str)
-            _battery: A robot HAS a battery
-            _motor: A robot HAS a motor
-            _sensor: A robot HAS a sensor
+            _battery: (level: int, capacity: int)
+            _motor: (speed: int, is_running: bool)
+            _sensor: (sensor_type: str)
         """
         self._name = name
-        self._battery_level = Battery(battery)
-        self._motor = Motor(motor, is_running)
-        self._sensor = Sensor(sensor)
+        self._battery = Battery(100, 100)
+        self._motor = Motor(0, False)
+        self._sensor = Sensor("None")
 
     @property
     def name(self):
@@ -21,11 +21,11 @@ class RobotBase:
         return self._name
     
     def move(self, distance):
-        if self._motor < 0:
+        if self._motor.speed < 0:
             Sensor.read_data()
             Motor.move_forward(distance)
             Battery.drain(15)
-        elif self._motor > 0:
+        elif self._motor.speed > 0:
             Motor.move_backward(distance)
             Battery.drain(15)
         else:
@@ -37,7 +37,7 @@ class RobotBase:
     def __str__(self):
         """User-friendly report of the robot's status"""
         return(f"Robot Name: {self.name}, " +
-              f"{self._battery_level}, " +
+              f"{self._battery}, " +
               f"{self._motor}, "
               f"{self._sensor}")
     def __repr__(self):
@@ -45,17 +45,17 @@ class RobotBase:
         pass
 
 class Battery:
-    def __init__(self, capacity: int):
+    def __init__(self, level: int, capacity: int):
         self.capacity = capacity
-        self.level = capacity
+        self.level = level
 
-    def drain(self, amount):
+    def drain(self, amount: int):
         """Drain battery level by amount"""
         self.level = max(0, self.level - amount)
         if self.level == 0:
             print("Battery is depleted")
 
-    def charge(self, amount):
+    def charge(self, amount: int):
         """Charge battery by amount"""
         self.level = min(self.capacity, self.level + amount)
         if self.level == self.capacity:
@@ -105,7 +105,7 @@ class Sensor:
         self.reading = None
 
         self.sensor_data = self.read_data()
-        self.sensor_reading = self.get_reading()
+        self.sensor_reading = None
 
     def read_data(self):
         """Read sensor input"""
@@ -113,7 +113,7 @@ class Sensor:
         return self.sensor_data
 
     def detect_obstacle(self):
-        """Has an obstacle been detected"""
+        """Returns whether an obstacle has been detected"""
         if self.sensor_data == "obstacle":
             self.obstacle_detected = True
         else:
@@ -132,11 +132,8 @@ class Sensor:
 
 # Tests RobotBase class if this is the main file
 if __name__ == "__main__":
-    robot = RobotBase("Bingus", 180, 24, True, "LIDAR")
-    android = RobotBase("Sbeve", 270, 0, False, "Front Camera")
-
+    robot = RobotBase("Bingus")
     print(robot)
-    # robot.move(52)
-    # print(robot)
 
-    print(android)
+    robot._battery.level = 75
+    print(robot)
