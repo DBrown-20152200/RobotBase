@@ -22,17 +22,17 @@ class RobotBase:
     
     def move(self, distance):
         if self._motor.speed < 0:
-            Sensor.read_data()
-            Motor.move_forward(distance)
-            Battery.drain(15)
+            self._sensor.read_data()
+            self._motor.move_forward(distance)
+            self._battery.drain(2 * distance)
         elif self._motor.speed > 0:
-            Motor.move_backward(distance)
-            Battery.drain(15)
+            self._motor.move_backward(distance)
+            self._battery.drain(2 * distance)
         else:
-            Motor.stop()
+            self._motor.stop()
 
-        if(Sensor.detect_obstacle == True):
-            Motor.stop()
+        if(self._sensor.detect_obstacle == True):
+            self._motor.stop()
 
     def __str__(self):
         """User-friendly report of the robot's status"""
@@ -94,6 +94,8 @@ class Motor:
     def set_speed(self, speed:int):
         """Set specific robot speed"""
         self.speed = speed
+        if (speed == 0):
+            self.is_running = False
 
     def __str__(self):
         """Prints user friendly string"""
@@ -135,5 +137,7 @@ if __name__ == "__main__":
     robot = RobotBase("Bingus")
     print(robot)
 
-    robot._battery.level = 75
+    robot._motor.set_speed(34)
+    robot.move(5)
+    robot._sensor.sensor_type = "Camera"
     print(robot)
