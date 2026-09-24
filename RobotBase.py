@@ -1,7 +1,7 @@
 class RobotBase:
     """A class of robot controls."""
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, battery: Battery, motor: Motor, sensor: Sensor):
         """Initialise a robot base
         
         Args:
@@ -11,9 +11,9 @@ class RobotBase:
             _sensor: (sensor_type: str)
         """
         self._name = name
-        self._battery = Battery(100, 100)
-        self._motor = Motor(0, False)
-        self._sensor = Sensor("None")
+        self._battery = battery
+        self._motor = motor
+        self._sensor = sensor
 
     @property
     def name(self):
@@ -134,7 +134,7 @@ class Sensor:
 
 # Tests RobotBase class if this is the main file
 if __name__ == "__main__":
-    robot = RobotBase("Bingus")
+    robot = RobotBase("Bingus", Battery(24,50), Motor(10, True), Sensor("None"))
     print(robot)
 
     robot._motor.set_speed(34)
