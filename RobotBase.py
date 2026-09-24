@@ -21,18 +21,23 @@ class RobotBase:
         return self._name
     
     def move(self, distance):
-        if self._motor.speed < 0:
-            self._sensor.read_data()
-            self._motor.move_forward(distance)
-            self._battery.drain(2 * distance)
-        elif self._motor.speed > 0:
-            self._motor.move_backward(distance)
-            self._battery.drain(2 * distance)
+        self._sensor.detect_obstacle()
+        if(self._sensor.detect_obstacle() == True):
+            self._motor.stop()
         else:
-            self._motor.stop()
+            if self._motor.speed > 0:
+                self._sensor.read_data()
+                self._motor.move_forward(distance)
+                self._battery.drain(2 * distance)
+            elif self._motor.speed < 0:
+                self._motor.move_backward(distance)
+                self._battery.drain(2 * distance)
+            else:
+                self._motor.is_running = True
+                self._motor.set_speed(1)
+                self.move(distance)
 
-        if(self._sensor.detect_obstacle == True):
-            self._motor.stop()
+
 
     def __str__(self):
         """User-friendly report of the robot's status"""
@@ -45,6 +50,12 @@ class RobotBase:
         pass
 
 class Battery:
+    """A battery component
+    
+    Args:
+        level: current battery level (int)
+        capacity: maximum charge (int)"""
+    
     def __init__(self, level: int, capacity: int):
         self.capacity = capacity
         self.level = level
@@ -69,6 +80,12 @@ class Battery:
         return (f"Battery charge at {self.charge_percentage():.2f}%")
 
 class Motor:
+    """A motor component
+
+    Args:
+        speed: motor's current speed (int)
+        is_running: is the motor running (bool)"""
+    
     def __init__(self, speed: int, is_running: bool):
         self.set_speed(speed)
         if (speed != 0):
@@ -88,7 +105,7 @@ class Motor:
 
     def stop(self):
         """Stops movement"""
-        self.distance = 0
+        self.set_speed(0)
         self.is_running = False
 
     def set_speed(self, speed:int):
@@ -102,39 +119,38 @@ class Motor:
         return (f"Motor speed: {self.speed} m/s")
 
 class Sensor:
+    """Sensor component
+    
+    Args:
+        sensor_type: Name of the sensor (str)"""
     def __init__(self, sensor_type: str):
-        self.sensor_type = sensor_type
-        self.reading = None
-
-        self.sensor_data = self.read_data()
-        self.sensor_reading = None
+        self.type = sensor_type
+        self.reading = self.read_data()
 
     def read_data(self):
         """Read sensor input"""
-        self.sensor_data = f"{self.sensor_type} measurement"
-        return self.sensor_data
+        return f"{self.type} reading"
 
     def detect_obstacle(self):
         """Returns whether an obstacle has been detected"""
-        if self.sensor_data == "obstacle":
-            self.obstacle_detected = True
+        if self.reading == "obstacle":
+            return True
         else:
-            self.obstacle_detected = False
-        return self.obstacle_detected
-        
+            return False
+
     def get_reading(self):
         """Return sensor readings"""
-        return f"Sensor reading: {self.sensor_data}"
+        return f"Sensor reading: {self.reading}"
 
     def __str__(self):
-        return (f"Sensor: {self.sensor_type} Reading: {self.sensor_reading}")
+        return (f"Sensor: {self.type}, {self.get_reading()}")
 
     
 
 
 # Tests RobotBase class if this is the main file
 if __name__ == "__main__":
-    robot = RobotBase("Bingus", Battery(24,50), Motor(10, True), Sensor("None"))
+    robot = RobotBase("Bingus", Battery(24,50), Motor(10, True), Sensor("LIDAR"))
     print(robot)
 
     robot._motor.set_speed(34)
