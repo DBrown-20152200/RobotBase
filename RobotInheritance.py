@@ -4,9 +4,8 @@ class LineFollower(RobotBase):
     """Robot that moves along a black line"""
 
     def __init__(self, name: str, battery: Battery, motor: Motor, sensor: Sensor):
-        """Initialise a cleaning robot"""
+        """Initialise line following robot"""
         super().__init__(name, battery, motor, sensor)
-
 
     def detect_line(self):
         if self._sensor.reading == "black_line":
@@ -20,6 +19,16 @@ class LineFollower(RobotBase):
             self._motor.stop()
         else:
             super().move(distance)
+
+class SubRobot(RobotBase):
+    """Submarine Robot"""
+
+    def __init__(self, name: str, battery: Battery, motor: Motor, sensor: Sensor):
+        """Initialise Submarine Robot"""
+
+        super().__init__(name, battery, motor, sensor)
+
+    
 
 if __name__ == "__main__":
     Steve = LineFollower("Steve", Battery(75, 75), Motor(0, False), Sensor("Colour Sensor"))
