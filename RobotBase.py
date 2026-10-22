@@ -5,17 +5,17 @@ class Battery:
         level: current battery level (int)
         capacity: maximum charge (int)"""
     
-    def __init__(self, level: int, capacity: int):
+    def __init__(self, level: float, capacity: float):
         self.capacity = capacity
         self.level = level
 
-    def drain(self, amount: int):
+    def drain(self, amount: float):
         """Drain battery level by amount"""
         self.level = max(0, self.level - amount)
         if self.level == 0:
             print("Battery is depleted")
 
-    def charge(self, amount: int):
+    def charge(self, amount: float):
         """Charge battery by amount"""
         self.level = min(self.capacity, self.level + amount)
         if self.level == self.capacity:
@@ -35,19 +35,19 @@ class Motor:
         speed: motor's current speed (int)
         is_running: is the motor running (bool)"""
     
-    def __init__(self, speed: int, is_running: bool):
+    def __init__(self, speed: float, is_running: bool):
         self.set_speed(speed)
         if (speed != 0):
             self.is_running = True
         else:
             self.is_running = False
 
-    def move_forward(self, distance:int):
+    def move_forward(self, distance:float):
         """Moves the robot forward a set distance"""
         self.distance = distance
         self.is_running = True
 
-    def move_backward(self, distance:int):
+    def move_backward(self, distance:float):
         """Moves backward a set distance"""
         self.distance = 0 - distance
         self.is_running = True
@@ -57,7 +57,7 @@ class Motor:
         self.set_speed(0)
         self.is_running = False
 
-    def set_speed(self, speed:int):
+    def set_speed(self, speed:float):
         """Set specific robot speed"""
         self.speed = speed
         if (speed == 0):
